@@ -1,1 +1,2 @@
-# snake-game using pyhton's pygame module
+# snake-game 
+using pyhton's pygame module
