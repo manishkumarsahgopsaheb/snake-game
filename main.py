@@ -2,6 +2,7 @@ import pygame
 import random
 import os
 
+pygame.mixer.init()
 # initialization of pygame
 pygame.init()
 
@@ -12,10 +13,20 @@ red = (255, 0, 0)
 black = (0, 0, 0)
 green = (0, 255, 0)
 welcome_color = (236, 179, 255)
+red_last = (204, 0, 0)
 # creating window of our pygame
 screen_width = 900
 screen_height = 600
 game_window = pygame.display.set_mode((screen_width, screen_height))  # it accept the argument as tuple
+
+# Background image
+bgimg = pygame.image.load("backimage.jpg")
+bgimg = pygame.transform.scale(bgimg, (screen_width, screen_height)).convert_alpha()
+
+# welcome image
+bgimg_start = pygame.image.load("snakeback.jpg")
+bgimg_start = pygame.transform.scale(bgimg_start, (screen_width, screen_height)).convert_alpha()
+
 pygame.display.set_caption("Snake Game By Manish Kumar Sah")
 pygame.display.update()
 
@@ -36,16 +47,21 @@ def plot_snake(game_window, color, snake_list, snake_size):
 
 
 def welcome():
+    pygame.mixer.music.load('welcome.mp3')
+    pygame.mixer.music.play()
     exit_game = False
     while not exit_game:
         game_window.fill(welcome_color)
+        game_window.blit(bgimg_start, (0, 0))
         text_screen("Welcome To Manish's Snake Game!", black, 200, 200)
-        text_screen("Press Space To Play", black, 275, 300)
+        text_screen("Press Space Bar To Play", black, 275, 300)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit_game = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
+                    pygame.mixer.music.load('background.mp3')
+                    pygame.mixer.music.play()
                     game_loop()
         pygame.display.update()
         clock.tick(30)
@@ -82,8 +98,11 @@ def game_loop():
             with open("highscore.txt", "w") as f:
                 f.write(str(high_score))
             game_window.fill(white)
-            text_screen("Saanp Mar Gya! Enter Dabao Phir Se Khelna Hai To...", red, 80, 250)
-            text_screen("Your Score is: " + str(score) + " and High Score is: " + str(high_score), red, 125, 125)
+            game_window.blit(bgimg_start, (0, 0))
+
+            text_screen("Saanp Mar Gya! Enter Dabao Phir Se Khelna Hai To...", red_last, 80, 200)
+            text_screen("Your Score : " + str(score), black, 80, 125)
+            text_screen("High Score : " + str(high_score), black, 600, 125)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit_game = True
@@ -126,9 +145,10 @@ def game_loop():
                     high_score = score
 
             game_window.fill(white)
+            game_window.blit(bgimg, (0, 0))
             text_screen("Score: " + str(score), red, 5, 5)
             text_screen("High Score: " + str(high_score), red, 650, 5)
-            pygame.draw.rect(game_window, red, [food_x, food_y, snake_size, snake_size])
+            pygame.draw.rect(game_window, green, [food_x, food_y, snake_size, snake_size])
 
             head = []
             head.append(snake_x)
@@ -140,11 +160,15 @@ def game_loop():
 
             if head in snake_list[:-1]:
                 game_over = True
+                pygame.mixer.music.load('burst.mp3')
+                pygame.mixer.music.play()
 
             if snake_x < 0 or snake_x > screen_width or snake_y < 0 or snake_y > screen_height:
                 game_over = True
+                pygame.mixer.music.load('burst.mp3')
+                pygame.mixer.music.play()
 
-            plot_snake(game_window, black, snake_list, snake_size)
+            plot_snake(game_window, green, snake_list, snake_size)
         pygame.display.update()
         clock.tick(fps)
 
