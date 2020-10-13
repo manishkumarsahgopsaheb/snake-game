@@ -27,13 +27,15 @@ bgimg = pygame.transform.scale(bgimg, (screen_width, screen_height)).convert_alp
 bgimg_start = pygame.image.load("snakeback.jpg")
 bgimg_start = pygame.transform.scale(bgimg_start, (screen_width, screen_height)).convert_alpha()
 
+manish = pygame.image.load("manish.jpg")
+manish = pygame.transform.scale(manish, (200, 200)).convert_alpha()
 pygame.display.set_caption("Snake Game By Manish Kumar Sah")
 pygame.display.update()
 
 # lets make a clock so that our snake can move with some velocity i.e velocity = distance/time
 clock = pygame.time.Clock()
 
-font = pygame.font.SysFont(None, 45)
+font = pygame.font.SysFont(None, 35)
 
 
 def text_screen(text, color, x, y):
@@ -46,13 +48,43 @@ def plot_snake(game_window, color, snake_list, snake_size):
         pygame.draw.rect(game_window, color, [x, y, snake_size, snake_size])
 
 
+def game_instructions():
+    pygame.mixer.music.load('welcome.mp3')
+    pygame.mixer.music.play()
+    exit_game = False
+
+    while not exit_game:
+        game_window.fill(white)
+        game_window.blit(bgimg, (0, 0))
+        game_window.blit(manish, (350, 25))
+        text_screen("Game Instructions!:", white, 50, 240)
+        text_screen("(Press Space Bar To Continue...)", white, 500, 240)
+        text_screen("1. Use Arrow Keys For X And Y Move", white, 100, 280)
+        text_screen("2. If Snake Is Moving In +X dir Then, Do Not Press Left Arrow Key", white, 100, 320)
+        text_screen("3. If Snake Is Moving In -X dir Then, Do Not Press Right Arrow Key", white, 100, 360)
+        text_screen("4. If Snake Is Moving In +Y dir Then, Do Not Press Down Arrow Key", white, 100, 400)
+        text_screen("5. If Snake Is Moving In -Y dir Then, Do Not Press Up Arrow Key", white, 100, 440)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit_game = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    welcome()
+
+        pygame.display.update()
+        clock.tick(30)
+
+
 def welcome():
     pygame.mixer.music.load('welcome.mp3')
     pygame.mixer.music.play()
     exit_game = False
     while not exit_game:
         game_window.fill(welcome_color)
+        # game_window.blit(manish, (0, 0))
         game_window.blit(bgimg_start, (0, 0))
+
         text_screen("Welcome To Manish's Snake Game!", black, 200, 200)
         text_screen("Press Space Bar To Play", black, 275, 300)
         for event in pygame.event.get():
@@ -176,4 +208,4 @@ def game_loop():
     quit()
 
 
-welcome()
+game_instructions()
